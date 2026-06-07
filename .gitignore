@@ -19,3 +19,7 @@ pnpm-debug.log*
 # macOS / Windows
 .DS_Store
 Thumbs.db
+
+# deploy betikleri (API token içerir — repoya gönderilmez)
+.deploy/
+.claude/

@@ -8,7 +8,9 @@ WORKDIR /app
 
 # Bağımlılıkları önce kopyala (katman önbelleği)
 COPY package*.json ./
-RUN npm ci
+# npm install kullanılıyor: Tailwind v4 (oxide) / lightningcss gibi platforma
+# özgü native bağımlılıklar için cross-platform güvenilirlik sağlar.
+RUN npm install --no-audit --no-fund
 
 # Kaynakları kopyala ve statik siteyi üret
 COPY . .
