@@ -1,0 +1,146 @@
+---
+import { nav, site } from '../data/site';
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href);
+---
+
+<header
+  id="site-header"
+  class="fixed inset-x-0 top-0 z-50 transition-all duration-500"
+  data-header
+>
+  <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-10">
+    <!-- Logo -->
+    <a href="/" class="group flex flex-col leading-none" aria-label="Lela Events ana sayfa">
+      <span class="font-display text-2xl tracking-wide-sm text-ink transition-colors" data-logo>
+        Lela
+      </span>
+      <span class="text-[0.6rem] uppercase tracking-luxe text-champagne-700 transition-colors" data-logo-sub>
+        Events
+      </span>
+    </a>
+
+    <!-- Masaüstü navigasyon -->
+    <nav class="hidden items-center gap-9 lg:flex" aria-label="Ana menü">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              'relative text-[0.8rem] uppercase tracking-wide-sm transition-colors hover:text-champagne-700',
+              isActive(item.href) ? 'text-champagne-700' : 'text-ink/80',
+            ]}
+            data-nav-link
+          >
+            {item.label}
+            {isActive(item.href) && (
+              <span class="absolute -bottom-1.5 left-0 h-px w-full bg-champagne-500" />
+            )}
+          </a>
+        ))
+      }
+    </nav>
+
+    <!-- CTA + mobil menü tetikleyici -->
+    <div class="flex items-center gap-4">
+      <a
+        href="/iletisim"
+        class="btn-sheen hidden rounded-full border border-sage-400 bg-sage-400/0 px-6 py-2.5 text-[0.72rem] uppercase tracking-wide-sm text-sage-700 transition-all hover:bg-sage-500 hover:text-ivory sm:inline-block"
+        data-cta-link
+      >
+        Teklif Al
+      </a>
+      <button
+        id="menu-toggle"
+        class="flex h-10 w-10 items-center justify-center lg:hidden"
+        aria-label="Menüyü aç"
+        aria-expanded="false"
+      >
+        <span class="relative block h-3.5 w-6">
+          <span class="absolute left-0 top-0 h-px w-full bg-ink transition-all" data-bar="1"></span>
+          <span class="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-ink transition-all" data-bar="2"></span>
+          <span class="absolute bottom-0 left-0 h-px w-full bg-ink transition-all" data-bar="3"></span>
+        </span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobil menü paneli -->
+<div
+  id="mobile-menu"
+  class="fixed inset-0 z-40 translate-x-full bg-cream transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] lg:hidden"
+>
+  <div class="flex h-full flex-col items-center justify-center gap-7 px-8">
+    {
+      nav.map((item, i) => (
+        <a
+          href={item.href}
+          class="font-serif text-3xl text-ink/90 transition-colors hover:text-champagne-700"
+          style={`transition-delay:${i * 40}ms`}
+        >
+          {item.label}
+        </a>
+      ))
+    }
+    <a
+      href="/iletisim"
+      class="mt-4 rounded-full bg-sage-500 px-9 py-3 text-sm uppercase tracking-wide-sm text-ivory"
+    >
+      Teklif Al
+    </a>
+    <p class="mt-6 text-sm text-ink/50">{site.phone}</p>
+  </div>
+</div>
+
+<script>
+  const header = document.getElementById('site-header')!;
+  const toggle = document.getElementById('menu-toggle')!;
+  const menu = document.getElementById('mobile-menu')!;
+  const bars = toggle.querySelectorAll<HTMLElement>('[data-bar]');
+  let open = false;
+
+  // Kaydırınca header katılaşsın
+  const onScroll = () => {
+    if (window.scrollY > 40) {
+      header.classList.add('header-solid');
+    } else {
+      header.classList.remove('header-solid');
+    }
+  };
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  toggle.addEventListener('click', () => {
+    open = !open;
+    menu.classList.toggle('translate-x-full', !open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Menüyü kapat' : 'Menüyü aç');
+    document.body.style.overflow = open ? 'hidden' : '';
+    // hamburger → çarpı
+    bars[0].style.transform = open ? 'translateY(7px) rotate(45deg)' : '';
+    bars[1].style.opacity = open ? '0' : '1';
+    bars[2].style.transform = open ? 'translateY(-7px) rotate(-45deg)' : '';
+  });
+
+  menu.querySelectorAll('a').forEach((a) =>
+    a.addEventListener('click', () => {
+      open = false;
+      menu.classList.add('translate-x-full');
+      document.body.style.overflow = '';
+      bars[0].style.transform = '';
+      bars[1].style.opacity = '1';
+      bars[2].style.transform = '';
+    })
+  );
+</script>
+
+<style>
+  /* Kaydırma sonrası katı header */
+  #site-header.header-solid {
+    background-color: rgba(253, 251, 247, 0.85);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 1px 0 rgba(217, 196, 160, 0.4);
+  }
+</style>

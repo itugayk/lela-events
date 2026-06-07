@@ -1,0 +1,73 @@
+---
+import { services } from '../data/services';
+import Ornament from './Ornament.astro';
+
+// basit ikon yolu sözlüğü
+const icons: Record<string, string> = {
+  rings: 'M8 14a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm8 4a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM12 4l2 2-2 2-2-2 2-2Z',
+  heart: 'M12 21s-7-4.7-9.3-9.2C1 8.4 2.7 5 6 5c2 0 3.2 1.3 4 2.5C10.8 6.3 12 5 14 5c3.3 0 5 3.4 3.3 6.8C19 16.3 12 21 12 21Z',
+  flame: 'M12 2c1 3-2 4-2 7a2 2 0 1 0 4 0c2 1.5 3 3.5 3 6a5 5 0 1 1-10 0c0-4 5-6 5-13Z',
+  building: 'M4 21V5l8-3 8 3v16M9 9h.01M9 13h.01M9 17h.01M15 9h.01M15 13h.01M15 17h.01',
+  palette: 'M12 3a9 9 0 1 0 0 18c1.5 0 2-1 2-2s-1-1.5-1-2.5 1-1.5 2-1.5h1a4 4 0 0 0 4-4c0-4.4-3.6-8-8-8Zm-4 9a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Zm3-4a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Zm5 0a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Z',
+};
+---
+
+<section id="hizmetler" class="relative bg-ivory py-24 lg:py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-10">
+    <div class="mx-auto max-w-2xl text-center" data-reveal>
+      <Ornament label="Hizmetlerimiz" />
+      <h2 class="mt-6 font-display text-4xl leading-tight sm:text-5xl">
+        Her etkinliğe özel, <span class="italic text-sage-500">incelikli</span> dokunuşlar
+      </h2>
+      <p class="mt-5 text-base font-light leading-relaxed text-ink/65">
+        Tek bir anı değil, baştan sona bir deneyimi tasarlıyoruz. İşte hayatınızın
+        özel günlerinde yanınızda olduğumuz alanlar.
+      </p>
+    </div>
+
+    <div class="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-stagger>
+      {
+        services.map((s, i) => (
+          <a
+            href="/hizmetler"
+            class:list={[
+              'group relative flex flex-col overflow-hidden rounded-2xl border border-champagne-200/70 bg-cream p-8 transition-all duration-500 hover:-translate-y-1.5 hover:border-champagne-400 hover:shadow-2xl hover:shadow-champagne-200/50',
+              i === 0 ? 'lg:row-span-2 lg:justify-end' : '',
+            ]}
+            data-stagger-item
+          >
+            {i === 0 && (
+              <div class="absolute inset-0 -z-0">
+                <img src={s.image} alt={s.title} class="h-full w-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105" />
+                <div class="absolute inset-0 bg-gradient-to-t from-sage-900/85 via-sage-900/30 to-transparent"></div>
+              </div>
+            )}
+
+            <div class:list={['relative z-10', i === 0 ? 'text-cream' : '']}>
+              <span
+                class:list={[
+                  'flex h-12 w-12 items-center justify-center rounded-full transition-colors',
+                  i === 0 ? 'bg-champagne-400/90 text-sage-900' : 'bg-sage-100 text-sage-600 group-hover:bg-sage-500 group-hover:text-ivory',
+                ]}
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                  <path d={icons[s.icon]} />
+                </svg>
+              </span>
+              <h3 class="mt-5 font-serif text-2xl">{s.title}</h3>
+              <p class:list={['mt-2 text-sm font-light leading-relaxed', i === 0 ? 'text-cream/85' : 'text-ink/60']}>
+                {s.short}
+              </p>
+              <span class:list={['mt-5 inline-flex items-center gap-2 text-xs uppercase tracking-wide-sm', i === 0 ? 'text-champagne-200' : 'text-champagne-700']}>
+                Detaylar
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="transition-transform group-hover:translate-x-1">
+                  <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>

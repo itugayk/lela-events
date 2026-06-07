@@ -1,0 +1,186 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const pageTitle = title ? `${title} · ${site.name}` : `${site.name} — ${site.tagline}`;
+const pageDesc = description ?? site.description;
+
+// JSON-LD: EventPlanning
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'EventPlanning',
+  name: site.name,
+  description: site.description,
+  url: site.url,
+  email: site.email,
+  telephone: site.phone,
+  foundingDate: String(site.founded),
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Bağdat Caddesi No. 124',
+    addressLocality: 'Kadıköy',
+    addressRegion: 'İstanbul',
+    addressCountry: 'TR',
+  },
+  areaServed: 'Türkiye',
+  sameAs: [site.instagram, site.pinterest],
+  makesOffer: [
+    { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Düğün Organizasyonu' } },
+    { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Nişan & Söz' } },
+    { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Kına Gecesi' } },
+    { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Kurumsal Etkinlik' } },
+    { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Konsept Tasarım' } },
+  ],
+};
+---
+
+<!doctype html>
+<html lang="tr" class="no-js">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDesc} />
+    <meta name="theme-color" content="#8a9a7b" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDesc} />
+    <meta property="og:url" content={site.url} />
+    <meta property="og:site_name" content={site.name} />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Italiana&family=Jost:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- JSON-LD EventPlanning -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+
+    <!-- Smooth scroll + GSAP reveal motoru -->
+    <script>
+      import { gsap } from 'gsap';
+      import { ScrollTrigger } from 'gsap/ScrollTrigger';
+      import Lenis from 'lenis';
+
+      document.documentElement.classList.remove('no-js');
+      gsap.registerPlugin(ScrollTrigger);
+
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // ── Lenis smooth scroll ──
+      if (!reduce) {
+        const lenis = new Lenis({
+          duration: 1.1,
+          easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          smoothWheel: true,
+        });
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => lenis.raf(time * 1000));
+        gsap.ticker.lagSmoothing(0);
+
+        // Çapa linkleri için Lenis ile yumuşak geçiş
+        document.querySelectorAll('a[href^="#"]').forEach((a) => {
+          a.addEventListener('click', (e) => {
+            const id = a.getAttribute('href');
+            if (!id || id === '#') return;
+            const el = document.querySelector(id);
+            if (el) {
+              e.preventDefault();
+              lenis.scrollTo(el as HTMLElement, { offset: -80 });
+            }
+          });
+        });
+      }
+
+      // ── Reveal: yukarı kayma ──
+      gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach((el) => {
+        const delay = parseFloat(el.dataset.delay || '0');
+        gsap.to(el, {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          delay,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 86%' },
+        });
+      });
+
+      // ── Reveal: yumuşak fade ──
+      gsap.utils.toArray<HTMLElement>('[data-reveal-fade]').forEach((el) => {
+        const delay = parseFloat(el.dataset.delay || '0');
+        gsap.to(el, {
+          opacity: 1,
+          duration: 1.4,
+          delay,
+          ease: 'power2.out',
+          scrollTrigger: { trigger: el, start: 'top 90%' },
+        });
+      });
+
+      // ── Sıralı kart reveal (data-stagger kapsayıcısı) ──
+      gsap.utils.toArray<HTMLElement>('[data-stagger]').forEach((wrap) => {
+        const items = wrap.querySelectorAll<HTMLElement>('[data-stagger-item]');
+        gsap.to(items, {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          ease: 'power3.out',
+          stagger: 0.12,
+          scrollTrigger: { trigger: wrap, start: 'top 82%' },
+        });
+      });
+
+      // ── Başlık harf reveal (data-split) ──
+      gsap.utils.toArray<HTMLElement>('[data-split]').forEach((el) => {
+        const spans = el.querySelectorAll('span');
+        gsap.to(spans, {
+          opacity: 1,
+          y: 0,
+          rotate: 0,
+          duration: 1,
+          ease: 'power3.out',
+          stagger: 0.04,
+          scrollTrigger: { trigger: el, start: 'top 88%' },
+        });
+      });
+
+      // ── Sayaç animasyonu (rakamlar) ──
+      gsap.utils.toArray<HTMLElement>('[data-count]').forEach((el) => {
+        const end = parseFloat(el.dataset.count || '0');
+        const obj = { v: 0 };
+        gsap.to(obj, {
+          v: end,
+          duration: 2,
+          ease: 'power2.out',
+          scrollTrigger: { trigger: el, start: 'top 90%' },
+          onUpdate: () => {
+            el.textContent = Math.round(obj.v).toString();
+          },
+        });
+      });
+    </script>
+  </body>
+</html>

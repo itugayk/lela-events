@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { img } from '../data/site';
+---
+
+<Layout title="Sayfa Bulunamadı">
+  <section class="relative flex min-h-screen items-center justify-center overflow-hidden text-center">
+    <div class="absolute inset-0">
+      <img src={img('1469371670807-013ccf25f16a', 1600)} alt="" class="h-full w-full object-cover" />
+      <div class="absolute inset-0 bg-ink/60"></div>
+    </div>
+    <div class="relative z-10 px-6 text-cream">
+      <p class="font-display text-8xl text-champagne-300">404</p>
+      <h1 class="mt-4 font-serif text-3xl">Bu sayfa kaybolmuş gibi görünüyor</h1>
+      <p class="mx-auto mt-3 max-w-md text-sm font-light text-cream/75">
+        Aradığınız sayfayı bulamadık. Sizi ana sayfaya geri götürelim.
+      </p>
+      <a href="/" class="btn-sheen mt-8 inline-block rounded-full bg-champagne-400 px-9 py-3.5 text-sm uppercase tracking-wide-sm text-sage-900 transition-transform hover:scale-105">
+        Ana Sayfaya Dön
+      </a>
+    </div>
+  </section>
+</Layout>

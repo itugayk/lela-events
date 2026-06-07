@@ -1,0 +1,106 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Ornament from '../components/Ornament.astro';
+import Network from '../components/Network.astro';
+import Testimonials from '../components/Testimonials.astro';
+import { img, site } from '../data/site';
+
+const values = [
+  { title: 'Zarafet', text: 'Her detayda sadelikten doğan bir incelik. Abartısız ama unutulmaz.' },
+  { title: 'Kişiye Özel', text: 'Şablon yok. Her etkinlik, sahibinin hikayesinden doğan biricik bir tasarım.' },
+  { title: 'Kusursuz İcra', text: 'Görünmeyen el. Siz anın tadını çıkarırken her şey yerli yerinde olur.' },
+];
+
+const team = [
+  { name: 'Lela Yılmaz', role: 'Kurucu & Kreatif Direktör', img: img('1573496359142-b8d87734a5a2', 600) },
+  { name: 'Defne Aksoy', role: 'Baş Organizatör', img: img('1580489944761-15a19d654956', 600) },
+  { name: 'Mert Çelik', role: 'Konsept Tasarımcı', img: img('1507003211169-0a1dd7228f2d', 600) },
+];
+---
+
+<Layout title="Hakkımızda" description="Lela Events — 2013'ten beri zarif ve kişiye özel düğün & etkinlik organizasyonu.">
+  <PageHero
+    kicker="Hakkımızda"
+    title="Hikayemiz"
+    subtitle={`${site.founded}'ten beri, anları zarafetle hayata geçiriyoruz.`}
+    image={img('1519225421980-715cb0215aed', 1800)}
+  />
+
+  <!-- Marka hikayesi -->
+  <section class="bg-ivory py-20 lg:py-28">
+    <div class="mx-auto grid max-w-6xl items-center gap-14 px-6 lg:grid-cols-2 lg:px-10">
+      <div class="relative" data-reveal>
+        <div class="overflow-hidden rounded-[2rem]">
+          <img src={img('1465495976277-4387d4b0b4c6', 1000)} alt="Lela Events ekibi bir etkinlikte" loading="lazy" class="aspect-[4/5] w-full object-cover" />
+        </div>
+        <div class="absolute -right-5 -top-5 hidden rounded-2xl bg-sage-500 px-7 py-5 text-cream sm:block">
+          <p class="font-display text-3xl">12+</p>
+          <p class="text-xs uppercase tracking-wide-sm text-cream/70">yıllık tutku</p>
+        </div>
+      </div>
+      <div data-reveal data-delay="0.1">
+        <Ornament label="Biz Kimiz" />
+        <h2 class="mt-6 font-display text-4xl leading-tight sm:text-5xl">
+          Anları, <span class="italic text-sage-500">duyguya</span> dönüştürüyoruz
+        </h2>
+        <p class="mt-6 text-base font-light leading-relaxed text-ink/70">
+          Lela Events, küçük bir atölyede büyük bir hayalle kuruldu: insanların hayatlarının
+          en özel günlerini, tıpkı hayal ettikleri gibi —belki daha da güzel— yaşatmak.
+        </p>
+        <p class="mt-4 text-base font-light leading-relaxed text-ink/70">
+          Bugün İstanbul merkezli ekibimizle Türkiye’nin dört bir yanında düğün, nişan, kına
+          ve kurumsal etkinlikler tasarlıyoruz. Her projeye aynı heyecanla, aynı titizlikle
+          başlıyoruz. Çünkü bizim için bu bir iş değil, bir tutku.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Değerler -->
+  <section class="bg-cream py-20 lg:py-24">
+    <div class="mx-auto max-w-6xl px-6 lg:px-10">
+      <div class="text-center" data-reveal>
+        <Ornament label="Değerlerimiz" />
+        <h2 class="mt-6 font-display text-4xl">Bizi biz yapan</h2>
+      </div>
+      <div class="mt-14 grid gap-6 md:grid-cols-3" data-stagger>
+        {
+          values.map((v, i) => (
+            <div class="rounded-2xl border border-champagne-200/70 bg-ivory p-8 text-center" data-stagger-item>
+              <span class="font-display text-5xl text-champagne-300">0{i + 1}</span>
+              <h3 class="mt-4 font-serif text-2xl text-sage-700">{v.title}</h3>
+              <p class="mt-3 text-sm font-light leading-relaxed text-ink/60">{v.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Ekip -->
+  <section class="bg-ivory py-20 lg:py-24">
+    <div class="mx-auto max-w-6xl px-6 lg:px-10">
+      <div class="text-center" data-reveal>
+        <Ornament label="Ekibimiz" />
+        <h2 class="mt-6 font-display text-4xl">Hayalinizin mimarları</h2>
+      </div>
+      <div class="mt-14 grid gap-8 sm:grid-cols-3" data-stagger>
+        {
+          team.map((m) => (
+            <div class="group text-center" data-stagger-item>
+              <div class="overflow-hidden rounded-[1.5rem]">
+                <img src={m.img} alt={m.name} loading="lazy" class="aspect-[3/4] w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              </div>
+              <h3 class="mt-5 font-serif text-2xl">{m.name}</h3>
+              <p class="text-xs uppercase tracking-wide-sm text-champagne-700">{m.role}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <Network />
+  <Testimonials />
+</Layout>

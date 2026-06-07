@@ -1,0 +1,154 @@
+---
+import { concepts, categoryFilters } from '../data/concepts';
+---
+
+<section class="bg-ivory py-20 lg:py-24">
+  <div class="mx-auto max-w-7xl px-6 lg:px-10">
+    <!-- Filtreler -->
+    <div class="mb-12 flex flex-wrap items-center justify-center gap-3" data-reveal>
+      {
+        categoryFilters.map((f, i) => (
+          <button
+            class:list={[
+              'rounded-full border px-6 py-2.5 text-xs uppercase tracking-wide-sm transition-all',
+              i === 0
+                ? 'border-sage-500 bg-sage-500 text-ivory'
+                : 'border-champagne-300 text-ink/60 hover:border-sage-400 hover:text-sage-700',
+            ]}
+            data-filter={f.value}
+          >
+            {f.label}
+          </button>
+        ))
+      }
+    </div>
+
+    <!-- Masonry galeri -->
+    <div class="masonry columns-1 sm:columns-2 lg:columns-3" id="concept-grid">
+      {
+        concepts.map((c) => (
+          <figure
+            class="concept-item group relative cursor-pointer overflow-hidden rounded-2xl"
+            data-cat={c.category}
+            data-full={c.image}
+            data-title={c.title}
+            data-loc={c.location}
+          >
+            <img
+              src={c.image}
+              alt={`${c.title} — ${c.location}`}
+              loading="lazy"
+              class:list={['w-full object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110', c.ratio === 'tall' ? 'aspect-[3/4]' : 'aspect-[4/3]']}
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-sage-900/80 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
+            <figcaption class="absolute inset-x-0 bottom-0 translate-y-3 p-6 text-cream opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+              <p class="text-[0.6rem] uppercase tracking-luxe text-champagne-200">{c.categoryLabel}</p>
+              <h3 class="mt-1 font-serif text-xl">{c.title}</h3>
+              <p class="text-xs text-cream/75">{c.location}</p>
+            </figcaption>
+            <!-- büyüteç simgesi -->
+            <span class="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-ivory/85 text-sage-700 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3M11 8v6M8 11h6" stroke-linecap="round"/></svg>
+            </span>
+          </figure>
+        ))
+      }
+    </div>
+
+    <p class="mt-10 hidden text-center text-sm text-ink/50" id="empty-state">Bu kategoride henüz konsept yok.</p>
+  </div>
+</section>
+
+<!-- Lightbox -->
+<div id="lightbox" class="lightbox pointer-events-none fixed inset-0 z-[60] flex items-center justify-center bg-sage-900/95 px-6 opacity-0">
+  <button id="lb-close" class="absolute right-6 top-6 flex h-12 w-12 items-center justify-center rounded-full border border-cream/30 text-cream transition-colors hover:bg-cream/10" aria-label="Kapat">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6 6 18M6 6l12 12" stroke-linecap="round"/></svg>
+  </button>
+  <button id="lb-prev" class="absolute left-4 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-cream/30 text-cream transition-colors hover:bg-cream/10 sm:left-8" aria-label="Önceki">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <button id="lb-next" class="absolute right-4 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-cream/30 text-cream transition-colors hover:bg-cream/10 sm:right-8" aria-label="Sonraki">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <figure class="max-h-[85vh] max-w-4xl text-center">
+    <img id="lb-img" src="" alt="" class="mx-auto max-h-[78vh] w-auto rounded-xl object-contain" />
+    <figcaption class="mt-4 text-cream">
+      <h3 class="font-serif text-2xl" id="lb-title"></h3>
+      <p class="text-sm text-cream/70" id="lb-loc"></p>
+    </figcaption>
+  </figure>
+</div>
+
+<script>
+  // ── Filtreleme ──
+  const filterBtns = Array.from(document.querySelectorAll<HTMLElement>('[data-filter]'));
+  const items = Array.from(document.querySelectorAll<HTMLElement>('.concept-item'));
+  const empty = document.getElementById('empty-state')!;
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const val = btn.dataset.filter!;
+      filterBtns.forEach((b) => {
+        const on = b === btn;
+        b.classList.toggle('bg-sage-500', on);
+        b.classList.toggle('text-ivory', on);
+        b.classList.toggle('border-sage-500', on);
+        b.classList.toggle('text-ink/60', !on);
+        b.classList.toggle('border-champagne-300', !on);
+      });
+      let visible = 0;
+      items.forEach((it) => {
+        const show = val === 'all' || it.dataset.cat === val;
+        it.style.display = show ? '' : 'none';
+        if (show) {
+          visible++;
+          it.style.opacity = '0';
+          it.style.transform = 'scale(0.96)';
+          requestAnimationFrame(() => {
+            it.style.transition = 'opacity .5s ease, transform .5s ease';
+            it.style.opacity = '1';
+            it.style.transform = 'scale(1)';
+          });
+        }
+      });
+      empty.classList.toggle('hidden', visible > 0);
+    });
+  });
+
+  // ── Lightbox ──
+  const lb = document.getElementById('lightbox')!;
+  const lbImg = document.getElementById('lb-img') as HTMLImageElement;
+  const lbTitle = document.getElementById('lb-title')!;
+  const lbLoc = document.getElementById('lb-loc')!;
+  let idx = 0;
+
+  const visibleItems = () => items.filter((it) => it.style.display !== 'none');
+
+  const open = (i: number) => {
+    const list = visibleItems();
+    idx = (i + list.length) % list.length;
+    const el = list[idx];
+    lbImg.src = el.dataset.full!;
+    lbImg.alt = el.dataset.title!;
+    lbTitle.textContent = el.dataset.title!;
+    lbLoc.textContent = el.dataset.loc!;
+    lb.classList.remove('opacity-0', 'pointer-events-none');
+    document.body.style.overflow = 'hidden';
+  };
+  const close = () => {
+    lb.classList.add('opacity-0', 'pointer-events-none');
+    document.body.style.overflow = '';
+  };
+
+  items.forEach((it) => it.addEventListener('click', () => open(visibleItems().indexOf(it))));
+  document.getElementById('lb-close')!.addEventListener('click', close);
+  document.getElementById('lb-next')!.addEventListener('click', () => open(idx + 1));
+  document.getElementById('lb-prev')!.addEventListener('click', () => open(idx - 1));
+  lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
+  document.addEventListener('keydown', (e) => {
+    if (lb.classList.contains('pointer-events-none')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowRight') open(idx + 1);
+    if (e.key === 'ArrowLeft') open(idx - 1);
+  });
+</script>

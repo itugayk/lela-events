@@ -1,0 +1,175 @@
+@import 'tailwindcss';
+
+/* ───────────────────────────────────────────────────────────
+   Lela Events — Tasarım sistemi (Tailwind v4 @theme)
+   Palet: şampanya/altın + kirli beyaz + adaçayı yeşili aksan
+─────────────────────────────────────────────────────────── */
+@theme {
+  --color-champagne-50: #fbf8f2;
+  --color-champagne-100: #f4ecdd;
+  --color-champagne-200: #ebdcc2;
+  --color-champagne-300: #e0caa5;
+  --color-champagne-400: #d9c4a0;
+  --color-champagne-500: #c9ad7f;
+  --color-champagne-600: #b3925f;
+  --color-champagne-700: #927349;
+  --color-champagne-800: #6f573a;
+  --color-champagne-900: #4d3d2c;
+
+  --color-sage-50: #f4f6f1;
+  --color-sage-100: #e6ebde;
+  --color-sage-200: #cdd7be;
+  --color-sage-300: #adbd96;
+  --color-sage-400: #8a9a7b;
+  --color-sage-500: #6f7f62;
+  --color-sage-600: #57654c;
+  --color-sage-700: #45503e;
+  --color-sage-800: #394234;
+  --color-sage-900: #2f372c;
+
+  --color-cream: #f7f3ec;
+  --color-ivory: #fdfbf7;
+  --color-ink: #2b2622;
+
+  --font-serif: 'Cormorant Garamond', 'Italiana', Georgia, serif;
+  --font-display: 'Italiana', 'Cormorant Garamond', serif;
+  --font-body: 'Jost', 'Inter', system-ui, sans-serif;
+
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ───────── Temel ───────── */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background-color: var(--color-ivory);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: var(--color-champagne-300);
+  color: var(--color-sage-900);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* İnce harf aralığı yardımcıları */
+.tracking-luxe {
+  letter-spacing: 0.32em;
+}
+.tracking-wide-sm {
+  letter-spacing: 0.18em;
+}
+
+/* ───────── GSAP reveal başlangıç durumları ───────── */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(38px);
+  will-change: transform, opacity;
+}
+[data-reveal-fade] {
+  opacity: 0;
+}
+[data-split] > span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(110%) rotate(2deg);
+}
+.reveal-ready [data-reveal],
+.reveal-ready [data-reveal-fade] {
+  /* GSAP devralır; JS yoksa içerik görünür kalsın */
+}
+
+/* JS kapalıysa içerik görünür olsun (erişilebilirlik) */
+.no-js [data-reveal],
+.no-js [data-reveal-fade],
+.no-js [data-split] > span {
+  opacity: 1;
+  transform: none;
+}
+
+/* ───────── İnce çizgisel süsleme ───────── */
+.ornament-line {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-champagne-400) 50%,
+    transparent
+  );
+}
+
+/* ───────── Yumuşak ışık parıltısı ───────── */
+.glow-soft {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(217, 196, 160, 0.35),
+    transparent 70%
+  );
+  filter: blur(40px);
+}
+
+/* ───────── Galeri masonry ───────── */
+.masonry {
+  column-gap: 1.25rem;
+}
+.masonry > * {
+  break-inside: avoid;
+  margin-bottom: 1.25rem;
+}
+
+/* ───────── Lightbox ───────── */
+.lightbox {
+  transition: opacity 0.4s var(--ease-soft);
+}
+
+/* ───────── Form adım geçişi ───────── */
+.step-pane {
+  transition: opacity 0.45s var(--ease-soft), transform 0.45s var(--ease-soft);
+}
+
+/* ───────── Düğme parıltısı ───────── */
+.btn-sheen {
+  position: relative;
+  overflow: hidden;
+}
+.btn-sheen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 70%
+  );
+  transform: translateX(-120%);
+  transition: transform 0.7s var(--ease-soft);
+}
+.btn-sheen:hover::after {
+  transform: translateX(120%);
+}
+
+/* Hareket azaltma tercihi */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  [data-reveal],
+  [data-reveal-fade],
+  [data-split] > span {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

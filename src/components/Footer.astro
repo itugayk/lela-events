@@ -1,0 +1,51 @@
+---
+import { nav, site } from '../data/site';
+---
+
+<footer class="relative overflow-hidden bg-sage-800 text-cream">
+  <!-- üst ışık çizgisi -->
+  <div class="ornament-line opacity-40"></div>
+
+  <div class="mx-auto max-w-7xl px-6 py-20 lg:px-10">
+    <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+      <!-- Marka -->
+      <div class="lg:col-span-2">
+        <p class="font-display text-3xl tracking-wide-sm">Lela <span class="text-champagne-400">Events</span></p>
+        <p class="mt-5 max-w-sm text-sm leading-relaxed text-cream/70">
+          {site.description}
+        </p>
+        <div class="mt-7 flex gap-4">
+          <a href={site.instagram} class="rounded-full border border-cream/25 px-5 py-2 text-xs uppercase tracking-wide-sm transition-colors hover:border-champagne-400 hover:text-champagne-400" target="_blank" rel="noopener">Instagram</a>
+          <a href={site.pinterest} class="rounded-full border border-cream/25 px-5 py-2 text-xs uppercase tracking-wide-sm transition-colors hover:border-champagne-400 hover:text-champagne-400" target="_blank" rel="noopener">Pinterest</a>
+        </div>
+      </div>
+
+      <!-- Menü -->
+      <div>
+        <h4 class="text-xs uppercase tracking-luxe text-champagne-400">Keşfet</h4>
+        <ul class="mt-5 space-y-3 text-sm text-cream/70">
+          {nav.map((item) => (
+            <li><a href={item.href} class="transition-colors hover:text-champagne-300">{item.label}</a></li>
+          ))}
+          <li><a href="/iletisim" class="transition-colors hover:text-champagne-300">Teklif Al</a></li>
+        </ul>
+      </div>
+
+      <!-- İletişim -->
+      <div>
+        <h4 class="text-xs uppercase tracking-luxe text-champagne-400">İletişim</h4>
+        <ul class="mt-5 space-y-3 text-sm text-cream/70">
+          <li>{site.address}</li>
+          <li><a href={`tel:${site.phoneHref}`} class="transition-colors hover:text-champagne-300">{site.phone}</a></li>
+          <li><a href={`mailto:${site.email}`} class="transition-colors hover:text-champagne-300">{site.email}</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ornament-line mt-14 opacity-25"></div>
+    <div class="mt-7 flex flex-col items-center justify-between gap-3 text-xs text-cream/45 sm:flex-row">
+      <p>© {new Date().getFullYear()} {site.name}. Tüm hakları saklıdır.</p>
+      <p>Demo · dugun.demo.dijifa.com</p>
+    </div>
+  </div>
+</footer>

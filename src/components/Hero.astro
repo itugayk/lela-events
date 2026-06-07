@@ -1,0 +1,133 @@
+---
+import { img } from '../data/site';
+const heroImg = img('1519741497674-611481863552', 2000, 75);
+---
+
+<section class="relative flex h-screen min-h-[640px] items-center justify-center overflow-hidden">
+  <!-- Sinematik arka plan -->
+  <div class="absolute inset-0" data-hero-bg>
+    <img
+      src={heroImg}
+      alt="Göl kıyısında zarif bir kır düğünü kurulumu"
+      class="h-full w-full scale-110 object-cover"
+      fetchpriority="high"
+    />
+    <!-- Yumuşak ışık & koyulaştırma katmanları -->
+    <div class="absolute inset-0 bg-gradient-to-b from-ink/40 via-ink/20 to-ink/55"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-ivory/90 via-transparent to-transparent"></div>
+  </div>
+
+  <!-- İnce ışık parıltısı -->
+  <div class="glow-soft pointer-events-none absolute left-1/2 top-1/3 h-[42rem] w-[42rem] -translate-x-1/2"></div>
+
+  <!-- Partikül / ışık kanvası -->
+  <canvas id="hero-particles" class="pointer-events-none absolute inset-0 h-full w-full"></canvas>
+
+  <!-- İçerik -->
+  <div class="relative z-10 px-6 text-center text-cream">
+    <p class="overflow-hidden">
+      <span class="inline-block text-xs uppercase tracking-luxe text-champagne-200" data-hero-kicker>
+        İstanbul · 2013'ten beri
+      </span>
+    </p>
+
+    <h1 class="mt-6 font-display text-5xl leading-[1.05] sm:text-7xl lg:text-[5.5rem]" data-hero-title>
+      <span class="block overflow-hidden"><span class="block" data-line>Hayalinizdeki gün,</span></span>
+      <span class="block overflow-hidden"><span class="block italic text-champagne-200" data-line>zarafetle hayata gelsin</span></span>
+    </h1>
+
+    <p class="mx-auto mt-7 max-w-xl text-base font-light leading-relaxed text-cream/80" data-hero-sub>
+      Düğün, nişan, kına ve kurumsal etkinlikler için konsept tasarımı ve uçtan uca
+      organizasyon. Siz anın tadını çıkarın, gerisini bize bırakın.
+    </p>
+
+    <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row" data-hero-cta>
+      <a
+        href="/iletisim"
+        class="btn-sheen rounded-full bg-champagne-400 px-9 py-3.5 text-sm uppercase tracking-wide-sm text-sage-900 transition-transform hover:scale-105"
+      >
+        Teklif Al
+      </a>
+      <a
+        href="/etkinlikler"
+        class="rounded-full border border-cream/40 px-9 py-3.5 text-sm uppercase tracking-wide-sm text-cream transition-colors hover:border-cream hover:bg-cream/10"
+      >
+        Gerçek Etkinlikler
+      </a>
+    </div>
+  </div>
+
+  <!-- Aşağı kaydır işareti -->
+  <a
+    href="#hizmetler"
+    class="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-cream/70"
+    data-hero-scroll
+    aria-label="Aşağı kaydır"
+  >
+    <span class="text-[0.6rem] uppercase tracking-luxe">Keşfet</span>
+    <span class="block h-10 w-px animate-pulse bg-cream/50"></span>
+  </a>
+</section>
+
+<script>
+  import { gsap } from 'gsap';
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ── Giriş zaman çizelgesi ──
+  if (!reduce) {
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    tl.from('[data-hero-bg] img', { scale: 1.25, duration: 2.4, ease: 'power2.out' }, 0)
+      .from('[data-hero-kicker]', { yPercent: 120, opacity: 0, duration: 1 }, 0.3)
+      .from('[data-line]', { yPercent: 120, opacity: 0, duration: 1.1, stagger: 0.15 }, 0.4)
+      .from('[data-hero-sub]', { y: 24, opacity: 0, duration: 1 }, 0.9)
+      .from('[data-hero-cta]', { y: 24, opacity: 0, duration: 1 }, 1.1)
+      .from('[data-hero-scroll]', { opacity: 0, duration: 1 }, 1.4);
+  }
+
+  // ── İnce ışık partikülleri ──
+  const canvas = document.getElementById('hero-particles') as HTMLCanvasElement | null;
+  if (canvas && !reduce) {
+    const ctx = canvas.getContext('2d')!;
+    let w = 0, h = 0, raf = 0;
+    const N = 46;
+    const parts: { x: number; y: number; r: number; s: number; a: number; da: number }[] = [];
+
+    const resize = () => {
+      w = canvas.width = canvas.offsetWidth;
+      h = canvas.height = canvas.offsetHeight;
+    };
+    const seed = () => {
+      parts.length = 0;
+      for (let i = 0; i < N; i++) {
+        parts.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          r: Math.random() * 1.8 + 0.4,
+          s: Math.random() * 0.3 + 0.05,
+          a: Math.random() * 0.5 + 0.1,
+          da: (Math.random() - 0.5) * 0.01,
+        });
+      }
+    };
+    const tick = () => {
+      ctx.clearRect(0, 0, w, h);
+      for (const p of parts) {
+        p.y -= p.s;
+        p.a += p.da;
+        if (p.a < 0.05 || p.a > 0.6) p.da *= -1;
+        if (p.y < -5) { p.y = h + 5; p.x = Math.random() * w; }
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(244, 236, 221, ${p.a})`;
+        ctx.fill();
+      }
+      raf = requestAnimationFrame(tick);
+    };
+
+    resize();
+    seed();
+    tick();
+    window.addEventListener('resize', () => { cancelAnimationFrame(raf); resize(); seed(); tick(); });
+  }
+</script>

@@ -1,0 +1,94 @@
+---
+import { testimonials } from '../data/testimonials';
+import Ornament from './Ornament.astro';
+---
+
+<section class="bg-ivory py-24 lg:py-32">
+  <div class="mx-auto max-w-4xl px-6 lg:px-10">
+    <div class="flex flex-col items-center text-center" data-reveal>
+      <Ornament label="Çiftlerimiz" />
+      <h2 class="mt-6 font-display text-4xl leading-tight sm:text-5xl">
+        Onların <span class="italic text-sage-500">duygularıyla</span>
+      </h2>
+    </div>
+
+    <div class="relative mt-14" data-reveal-fade>
+      <!-- büyük tırnak -->
+      <span class="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 font-display text-[10rem] leading-none text-champagne-200 select-none">”</span>
+
+      <div class="relative overflow-hidden" id="t-track-wrap">
+        <div class="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]" id="t-track">
+          {
+            testimonials.map((t) => (
+              <figure class="w-full flex-none px-2 text-center" data-slide>
+                <blockquote class="mx-auto max-w-2xl font-serif text-2xl leading-relaxed text-ink/85 sm:text-3xl">
+                  “{t.quote}”
+                </blockquote>
+                <figcaption class="mt-8 flex flex-col items-center gap-3">
+                  <img src={t.avatar} alt={t.couple} class="h-14 w-14 rounded-full object-cover ring-2 ring-champagne-300" loading="lazy" />
+                  <div>
+                    <p class="font-serif text-lg text-sage-700">{t.couple}</p>
+                    <p class="text-xs uppercase tracking-wide-sm text-champagne-700">{t.event}</p>
+                  </div>
+                </figcaption>
+              </figure>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- kontroller -->
+      <div class="mt-10 flex items-center justify-center gap-6">
+        <button id="t-prev" class="flex h-11 w-11 items-center justify-center rounded-full border border-champagne-300 text-champagne-700 transition-colors hover:bg-champagne-400 hover:text-sage-900" aria-label="Önceki yorum">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="flex gap-2" id="t-dots">
+          {testimonials.map((_, i) => (
+            <button class="h-2 w-2 rounded-full bg-champagne-300 transition-all" data-dot={i} aria-label={`Yorum ${i + 1}`}></button>
+          ))}
+        </div>
+        <button id="t-next" class="flex h-11 w-11 items-center justify-center rounded-full border border-champagne-300 text-champagne-700 transition-colors hover:bg-champagne-400 hover:text-sage-900" aria-label="Sonraki yorum">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const track = document.getElementById('t-track') as HTMLElement | null;
+  if (track) {
+    const slides = track.querySelectorAll('[data-slide]');
+    const dots = Array.from(document.querySelectorAll<HTMLElement>('#t-dots [data-dot]'));
+    const total = slides.length;
+    let idx = 0;
+    let timer: ReturnType<typeof setInterval>;
+
+    const render = () => {
+      track.style.transform = `translateX(-${idx * 100}%)`;
+      dots.forEach((d, i) => {
+        const on = i === idx;
+        d.style.width = on ? '1.5rem' : '0.5rem';
+        d.style.backgroundColor = on ? '#b3925f' : '#e0caa5';
+      });
+    };
+    const go = (n: number) => { idx = (n + total) % total; render(); };
+    const next = () => go(idx + 1);
+    const prev = () => go(idx - 1);
+
+    const start = () => { timer = setInterval(next, 6000); };
+    const stop = () => clearInterval(timer);
+    const reset = () => { stop(); start(); };
+
+    document.getElementById('t-next')!.addEventListener('click', () => { next(); reset(); });
+    document.getElementById('t-prev')!.addEventListener('click', () => { prev(); reset(); });
+    dots.forEach((d, i) => d.addEventListener('click', () => { go(i); reset(); }));
+
+    const wrap = document.getElementById('t-track-wrap')!;
+    wrap.addEventListener('mouseenter', stop);
+    wrap.addEventListener('mouseleave', start);
+
+    render();
+    start();
+  }
+</script>

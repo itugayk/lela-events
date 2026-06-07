@@ -1,0 +1,60 @@
+---
+import { events } from '../data/events';
+import Ornament from './Ornament.astro';
+---
+
+<section class="bg-cream py-24 lg:py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-10">
+    <div class="flex flex-col items-center text-center" data-reveal>
+      <Ornament label="Gerçek Etkinlikler" />
+      <h2 class="mt-6 font-display text-4xl leading-tight sm:text-5xl">
+        Birlikte yazdığımız <span class="italic text-sage-500">hikayeler</span>
+      </h2>
+      <p class="mt-5 max-w-xl text-base font-light leading-relaxed text-ink/65">
+        Her çiftin kendine has bir masalı var. İşte hayata geçirdiğimiz bazı
+        gerçek etkinlikler.
+      </p>
+    </div>
+
+    <div class="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" data-stagger>
+      {
+        events.map((e, i) => (
+          <a
+            href={`/etkinlikler#${e.slug}`}
+            class:list={[
+              'group relative block overflow-hidden rounded-2xl',
+              i % 4 === 0 || i % 4 === 3 ? 'lg:row-span-2' : '',
+            ]}
+            data-stagger-item
+          >
+            <div class:list={['relative w-full overflow-hidden', i % 4 === 0 || i % 4 === 3 ? 'aspect-[3/4] lg:h-full' : 'aspect-[4/3]']}>
+              <img
+                src={e.image}
+                alt={`${e.couple} — ${e.type}`}
+                loading="lazy"
+                class="h-full w-full object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-sage-900/85 via-sage-900/10 to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-95"></div>
+
+              <!-- Hover bilgi -->
+              <div class="absolute inset-x-0 bottom-0 translate-y-3 p-6 text-cream opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+                <p class="text-[0.65rem] uppercase tracking-luxe text-champagne-200">{e.type}</p>
+                <h3 class="mt-1 font-serif text-2xl">{e.couple}</h3>
+                <p class="mt-1 flex items-center gap-1.5 text-xs text-cream/80">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-6-5.3-6-10a6 6 0 1 1 12 0c0 4.7-6 10-6 10Z"/><circle cx="12" cy="11" r="2"/></svg>
+                  {e.location}
+                </p>
+              </div>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="mt-12 text-center" data-reveal>
+      <a href="/etkinlikler" class="btn-sheen inline-block rounded-full border border-sage-400 px-9 py-3.5 text-sm uppercase tracking-wide-sm text-sage-700 transition-colors hover:bg-sage-500 hover:text-ivory">
+        Tüm Etkinlikler
+      </a>
+    </div>
+  </div>
+</section>

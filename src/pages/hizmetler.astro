@@ -1,0 +1,56 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Process from '../components/Process.astro';
+import { services } from '../data/services';
+import { img } from '../data/site';
+---
+
+<Layout title="Hizmetler" description="Düğün, nişan, kına, kurumsal etkinlik ve konsept tasarımı — Lela Events hizmetleri.">
+  <PageHero
+    kicker="Hizmetlerimiz"
+    title="Her ana özen"
+    subtitle="Düğünden kurumsal etkinliğe, hayatınızın özel anlarını uçtan uca tasarlıyor ve hayata geçiriyoruz."
+    image={img('1606216794074-735e91aa2c92', 1800)}
+  />
+
+  <section class="bg-ivory py-20 lg:py-28">
+    <div class="mx-auto max-w-7xl space-y-24 px-6 lg:px-10">
+      {
+        services.map((s, i) => (
+          <article
+            id={s.slug}
+            class:list={['grid items-center gap-10 lg:grid-cols-2 lg:gap-16', i % 2 === 1 ? 'lg:[&>div:first-child]:order-2' : '']}
+          >
+            <div class="relative overflow-hidden rounded-[2rem]" data-reveal>
+              <img src={s.image} alt={s.title} loading="lazy" class="aspect-[4/3] w-full object-cover" />
+              <span class="absolute left-5 top-5 rounded-full bg-ivory/90 px-4 py-1.5 text-[0.6rem] uppercase tracking-luxe text-sage-700">
+                0{i + 1}
+              </span>
+            </div>
+            <div data-reveal data-delay="0.1">
+              <h2 class="font-display text-4xl leading-tight">{s.title}</h2>
+              <p class="mt-2 font-serif text-xl italic text-sage-500">{s.short}</p>
+              <p class="mt-5 text-base font-light leading-relaxed text-ink/65">{s.description}</p>
+              <ul class="mt-7 grid gap-3 sm:grid-cols-2">
+                {s.features.map((f) => (
+                  <li class="flex items-center gap-3 text-sm text-ink/75">
+                    <span class="flex h-6 w-6 flex-none items-center justify-center rounded-full bg-sage-100 text-sage-600">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <a href="/iletisim" class="btn-sheen mt-8 inline-block rounded-full bg-sage-500 px-8 py-3 text-sm uppercase tracking-wide-sm text-ivory transition-transform hover:scale-105">
+                Bu hizmet için teklif al
+              </a>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <Process />
+</Layout>

@@ -1,0 +1,49 @@
+---
+import { stats, partners } from '../data/misc';
+import Ornament from './Ornament.astro';
+---
+
+<section class="bg-cream py-24 lg:py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-10">
+    <!-- Rakamlar -->
+    <div class="grid grid-cols-2 gap-8 lg:grid-cols-4" data-stagger>
+      {
+        stats.map((s) => (
+          <div class="text-center" data-stagger-item>
+            <p class="font-display text-5xl text-sage-600 sm:text-6xl">
+              <span data-count={s.value}>0</span><span class="text-champagne-600">{s.suffix}</span>
+            </p>
+            <p class="mt-3 text-xs uppercase tracking-wide-sm text-ink/55">{s.label}</p>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="ornament-line mx-auto mt-20 max-w-md"></div>
+
+    <!-- Tedarikçi ağı -->
+    <div class="mt-16 text-center" data-reveal>
+      <Ornament label="Mekan & Tedarikçi Ağı" />
+      <h2 class="mt-6 font-display text-3xl leading-tight sm:text-4xl">
+        Türkiye’nin en seçkin <span class="italic text-sage-500">mekanlarıyla</span> çalışıyoruz
+      </h2>
+      <p class="mx-auto mt-4 max-w-xl text-sm font-light leading-relaxed text-ink/60">
+        Yılların getirdiği güçlü iş birlikleri sayesinde, hayalinizdeki mekanı ve en iyi
+        tedarikçileri sizin için bir araya getiriyoruz.
+      </p>
+    </div>
+
+    <div class="mt-12 flex flex-wrap items-center justify-center gap-3" data-stagger>
+      {
+        partners.map((p) => (
+          <span
+            class="rounded-full border border-champagne-300/70 bg-ivory px-6 py-2.5 font-serif text-lg text-sage-700 transition-colors hover:border-sage-400 hover:bg-sage-50"
+            data-stagger-item
+          >
+            {p}
+          </span>
+        ))
+      }
+    </div>
+  </div>
+</section>

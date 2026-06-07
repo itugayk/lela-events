@@ -1,0 +1,16 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import ConceptGallery from '../components/ConceptGallery.astro';
+import { img } from '../data/site';
+---
+
+<Layout title="Konseptler & Galeri" description="Düğün, nişan ve kurumsal etkinlik konseptlerimizden seçkiler — filtreleyin, yakından inceleyin.">
+  <PageHero
+    kicker="Konseptler & Galeri"
+    title="İlham veren anlar"
+    subtitle="Tasarladığımız konseptlerden bir seçki. Kategoriye göre filtreleyin, dilediğinizi yakından inceleyin."
+    image={img('1535254973040-607b474cb50d', 1800)}
+  />
+  <ConceptGallery />
+</Layout>

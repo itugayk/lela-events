@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dugun.demo.dijifa.com/sitemap-index.xml
